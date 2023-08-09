@@ -13,13 +13,13 @@ import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/super-hero")
+@RequestMapping("/")
 public class SuperHeroController {
 
     @Autowired
     private SuperHeroService superHeroService;
 
-    @PostMapping("/date")
+    @GetMapping("/date")
     public ResponseEntity<Response<List<ResponseDate>>> getDataByDateRange(@RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo) throws ParseException {
          return superHeroService.findByDateBetween(dateFrom, dateTo);
     }

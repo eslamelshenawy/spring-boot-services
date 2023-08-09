@@ -1,5 +1,6 @@
 package com.example.superheroservice.service;
 
+import com.example.superheroservice.dto.DateRangeRequest;
 import com.example.superheroservice.dto.ResponseDate;
 import com.example.superheroservice.entity.SuperHero;
 import com.example.superheroservice.repository.SuperHeroRepository;
@@ -11,6 +12,7 @@ import org.bson.types.Decimal128;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +28,7 @@ public class SuperHeroService {
     @Autowired
     private SuperHeroRepository superHeroRepository;
 
-    public ResponseEntity<Response<List<ResponseDate>>> findByDateBetween(String dateFrom, String dateTo) throws ParseException {
+    public ResponseEntity<Response<List<List<String>>>> findByDateBetween(String dateFrom, String dateTo) throws ParseException {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Date fromDate = dateFormat.parse(dateFrom);
@@ -34,19 +36,38 @@ public class SuperHeroService {
 
         List<ResponseDate> data = superHeroRepository.findByDateBetween(fromDate, toDate);
 
-        List<String> Dates = data.stream().map(d -> d.getDates().stream()
-                .map(date -> date.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
+        List<String> Dates = data.stream().map(d -> d.getDates().stream().map(date -> date.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
 
-        List<String> minCa2 = data.stream().map(d -> d.getMinCA().stream()
-                .map(min_ca2 -> min_ca2.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
+        List<String> minCa2 = data.stream().map(d -> d.getMinCA().stream().map(min_ca2 -> min_ca2.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
 
-        List<String> minPA = data.stream().map(d -> d.getMinPA().stream()
-                .map(min_pa -> min_pa.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
+        List<String> minPA = data.stream().map(d -> d.getMinPA().stream().map(min_pa -> min_pa.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
 
-        List<Response.Source> results = Arrays.asList(new Response.Source(Dates, convert(minCa2), convert(minPA)));
-        Response<List<ResponseDate>> response = Response.<List<ResponseDate>>builder().source(results).build();
+        List<List<String>> results = Arrays.asList(Dates, minCa2, minPA);
+
+        Response<List<List<String>>> response = Response.<List<List<String>>>builder().source(results).build();
         return ResponseEntity.ok(response);
     }
+
+
+    public ResponseEntity<Response<List<ResponseDate>>> getDataByDateRangeWithoutChangesInDate(String dateFrom, String dateTo) throws ParseException {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        Date fromDate = dateFormat.parse(dateFrom);
+        Date toDate = dateFormat.parse(dateTo);
+
+        List<ResponseDate> data = superHeroRepository.findByDateBetween(fromDate, toDate);
+
+        List<String> Dates = data.stream().map(d -> d.getDates().stream().map(date -> date.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
+
+        List<String> minCa2 = data.stream().map(d -> d.getMinCA().stream().map(min_ca2 -> min_ca2.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
+
+        List<String> minPA = data.stream().map(d -> d.getMinPA().stream().map(min_pa -> min_pa.toString()).collect(Collectors.joining(", "))).collect(Collectors.toList());
+
+        Response<List<ResponseDate>> response = Response.<List<ResponseDate>>builder().source(data).build();
+        return ResponseEntity.ok(response);
+    }
+
 
     public List<Decimal128> convert(List<String> data) {
         Decimal128[] decimal128MinCAs = new Decimal128[data.size()];

@@ -21,13 +21,18 @@ public class SuperHeroController {
     private SuperHeroService superHeroService;
 
     @GetMapping("/date")
-    public ResponseEntity<Response<List<List<String>>>> getDataByDateRange(@RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo) throws ParseException {
+    public ResponseEntity<Response<List<String>>> getDataByDateRange(@RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo) throws ParseException {
          return superHeroService.findByDateBetween(dateFrom, dateTo);
     }
 
     @GetMapping("dates")
     public ResponseEntity<Response<List<ResponseDate>>> getDataByDateRangeWithoutChangesInDate(@RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo) throws ParseException {
          return superHeroService.getDataByDateRangeWithoutChangesInDate(dateFrom, dateTo);
+    }
+
+    @PostMapping("rang/dates")
+    public ResponseEntity<Response<List<ResponseDate>>> getDataByDateRangeWithoutChangesInDates(@RequestBody DateRangeRequest dateRangeRequest) throws ParseException {
+         return superHeroService.getDataByDateRangeWithoutChangesInDates(dateRangeRequest.getDateFrom(), dateRangeRequest.getDateTo());
     }
 
 }

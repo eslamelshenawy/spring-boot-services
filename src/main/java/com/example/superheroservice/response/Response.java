@@ -16,16 +16,17 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response<T> implements Serializable {
+    private T source;
 
-    private List<Source> source;
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Setter
-    @Builder
-    public static class Source {
-        private List<String>  dates;
-        private List<Decimal128> minCA;
-        private List<Decimal128> minPA;
-    }
+//    private List<Source> source;
+//    @AllArgsConstructor
+//    @NoArgsConstructor
+//    @Getter
+//    @Setter
+//    @Builder
+//    public static class Source {
+//        private List<String>  dates;
+//        private List<Decimal128> minCA;
+//        private List<Decimal128> minPA;
+//    }
 }

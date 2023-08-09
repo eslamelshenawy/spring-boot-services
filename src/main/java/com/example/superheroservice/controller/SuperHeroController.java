@@ -21,7 +21,7 @@ public class SuperHeroController {
     private SuperHeroService superHeroService;
 
     @GetMapping("/date")
-    public ResponseEntity<Response<List<String>>> getDataByDateRange(@RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo) throws ParseException {
+    public ResponseEntity<Response<List<List<String>>>> getDataByDateRange(@RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo) throws ParseException {
          return superHeroService.findByDateBetween(dateFrom, dateTo);
     }
 

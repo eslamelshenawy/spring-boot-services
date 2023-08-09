@@ -23,7 +23,7 @@ public class SuperHeroService {
     private SuperHeroRepository superHeroRepository;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    public ResponseEntity<Response<List<String>>> findByDateBetween(String dateFrom, String dateTo) throws ParseException {
+    public ResponseEntity<Response<List<List<String>>>> findByDateBetween(String dateFrom, String dateTo) throws ParseException {
 
         Date fromDate = dateFormat.parse(dateFrom);
         Date toDate = dateFormat.parse(dateTo);
@@ -31,10 +31,7 @@ public class SuperHeroService {
 
         List<List<String>> results = getResult(data);
 
-//    Response<List<List<String>>> response = Response.<List<List<String>>>builder().source(results).build();
-        Response<List<String>> response = Response.<List<String>>builder().source(
-                results.stream().map(r -> r.toString().replaceAll("[\\[\\]\\\\]", "")
-                ).collect(Collectors.toList())).build();
+        Response<List<List<String>>> response = Response.<List<List<String>>>builder().source(results).build();
 
         return ResponseEntity.ok(response);
     }
@@ -52,7 +49,6 @@ public class SuperHeroService {
     }
 
     public ResponseEntity<Response<List<ResponseDate>>> getDataByDateRangeWithoutChangesInDates(String dateFrom, String dateTo) throws ParseException {
-//        2023-05-31T22:00:00.000Z
         Date fromDate = dateFormat.parse(dateFrom);
         Date toDate = dateFormat.parse(dateTo);
 

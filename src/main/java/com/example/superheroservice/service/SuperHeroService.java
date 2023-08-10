@@ -1,8 +1,10 @@
 package com.example.superheroservice.service;
 
+import com.example.superheroservice.dto.DateRangeRequest;
 import com.example.superheroservice.dto.ResponseDate;
 import com.example.superheroservice.repository.SuperHeroRepository;
 import com.example.superheroservice.response.Response;
+import com.example.superheroservice.response.ResponseM;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -48,14 +51,44 @@ public class SuperHeroService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<Response<List<ResponseDate>>> getDataByDateRangeWithoutChangesInDates(String dateFrom, String dateTo) throws ParseException {
-        Date fromDate = dateFormat.parse(dateFrom);
-        Date toDate = dateFormat.parse(dateTo);
+    public ResponseEntity<List<ResponseM<List<String>>>> getDataByDateRangePostRequest(List<DateRangeRequest> dateRanges) throws ParseException {
 
-        List<ResponseDate> data = superHeroRepository.findByDateBetween(fromDate, toDate);
+        List<ResponseM<List<String>>> result = new ArrayList<>();
 
-        Response<List<ResponseDate>> response = Response.<List<ResponseDate>>builder().source(data).build();
-        return ResponseEntity.ok(response);
+        for (DateRangeRequest dateRange : dateRanges) {
+            Date dateFrom = dateRange.getDateFrom();
+            Date dateTo = dateRange.getDateTo();
+
+            List<ResponseDate> data = superHeroRepository.findByDateBetween(dateFrom, dateTo);
+
+            List<List<String>> results = getResult(data);
+            ResponseM<List<String>> response = ResponseM.<List<String>>builder().source(results).build();
+
+            result.add(response);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    public ResponseEntity<List<ResponseM<List<ResponseDate>>>> getDataByDateRangeWithoutChangesInDatePostRequest(List<DateRangeRequest> dateRanges) throws ParseException {
+
+        List<ResponseM<List<ResponseDate>>> result = new ArrayList<>();
+
+        for (DateRangeRequest dateRange : dateRanges) {
+            Date dateFrom = dateRange.getDateFrom();
+            Date dateTo = dateRange.getDateTo();
+
+            List<ResponseDate> data = superHeroRepository.findByDateBetween(dateFrom, dateTo);
+            List<List<ResponseDate>> results = data.stream()
+                    .map(responseDate -> Arrays.asList(responseDate))
+                    .collect(Collectors.toList());
+
+            ResponseM<List<ResponseDate>> response = ResponseM.<List<ResponseDate>>builder().source(results).build();
+
+            result.add(response);
+        }
+
+        return ResponseEntity.ok(result);
     }
 
 

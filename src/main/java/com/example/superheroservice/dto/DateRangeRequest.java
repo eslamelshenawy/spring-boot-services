@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 public class DateRangeRequest {
 
-    private String dateFrom;
-    private String dateTo;
+    private Date dateFrom;
+    private Date dateTo;
 
 }

@@ -5,6 +5,7 @@ import com.example.superheroservice.dto.DateRangeRequest;
 import com.example.superheroservice.dto.ResponseDate;
 import com.example.superheroservice.entity.SuperHero;
 import com.example.superheroservice.response.Response;
+import com.example.superheroservice.response.ResponseM;
 import com.example.superheroservice.service.SuperHeroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,13 @@ public class SuperHeroController {
     }
 
     @PostMapping("rang/dates")
-    public ResponseEntity<Response<List<ResponseDate>>> getDataByDateRangeWithoutChangesInDates(@RequestBody DateRangeRequest dateRangeRequest) throws ParseException {
-         return superHeroService.getDataByDateRangeWithoutChangesInDates(dateRangeRequest.getDateFrom(), dateRangeRequest.getDateTo());
+    public ResponseEntity<List<ResponseM<List<String>>>> getDataByDateRangePostRequest(@RequestBody List<DateRangeRequest> dateRanges) throws ParseException {
+         return superHeroService.getDataByDateRangePostRequest(dateRanges);
+    }
+
+    @PostMapping("rang/dates/all")
+    public ResponseEntity<List<ResponseM<List<ResponseDate>>>> getDataByDateRangeWithoutChangesInDatePostRequest(@RequestBody List<DateRangeRequest> dateRanges) throws ParseException {
+         return superHeroService.getDataByDateRangeWithoutChangesInDatePostRequest(dateRanges);
     }
 
 }
